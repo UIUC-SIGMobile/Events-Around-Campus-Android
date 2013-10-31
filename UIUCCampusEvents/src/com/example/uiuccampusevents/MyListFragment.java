@@ -13,12 +13,13 @@ public class MyListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		String[] result;
-		List<String> blah = new ArrayList<String>();
+		 
+		String[] result = new String[1];
+		List<String> events = new ArrayList<String>();
 		try {
 			result = new HtmlDownloader().execute("http://illinois.edu/calendar/list/7").get();
 			for (int i=0; i < result.length; i++){
-				blah.add(result[i]);
+				events.add(result[i]);
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -27,7 +28,8 @@ public class MyListFragment extends ListFragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ArrayAdapter<String> array = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, blah);
+		//ArrayAdapter<String> array = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, events);
+		EventArrayAdapter array = new EventArrayAdapter(getActivity(), result);
 		setListAdapter(array);
 	}
 

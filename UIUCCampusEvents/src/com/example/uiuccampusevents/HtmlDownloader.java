@@ -22,7 +22,6 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[]>{
 	private static String splitLine1 = "<span class=\"event-name\"><a href=\".+\">";	//Tag of first split in line
 	private static String splitLine2 = "</a>";											//Tag of second split
 
-	
 	protected String[] doInBackground(String... url)
 	{
 		String[] result = new String[1];
@@ -69,7 +68,7 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[]>{
 	     * and returned as String.
 	     */
     	//Array of 200 events at max
-    	String[] events = new String[200];
+    	String[] events = new String[100];
     	String[] temp = new String[2];
     	boolean start = false;
     	int i = 0;	
@@ -84,7 +83,7 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[]>{
 	    			line.trim();
 	    			if (line.contains(init)) start = true;
 	    		}
-	        	while (start && i < 200 && line != null){
+	        	while (start && i < 100 && line != null){
 	    			line.trim();
 	    			if (line.contains(eventIdentifierA) || line.contains(eventIdentifierB)){
 	    				line = reader.readLine();
