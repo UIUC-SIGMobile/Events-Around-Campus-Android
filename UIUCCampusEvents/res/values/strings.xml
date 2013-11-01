@@ -3,6 +3,7 @@
 
     <string name="app_name">UIUC Campus Events</string>
     <string name="action_settings">Settings</string>
+    <string name="about">About</string>
     <string name="hello_world">Hello world!</string>
     <string name="month">Mon</string>
     <string name="day">00</string>

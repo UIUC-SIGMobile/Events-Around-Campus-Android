@@ -1,6 +1,7 @@
 package com.example.uiuccampusevents;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,9 @@ public class EventArrayAdapter extends ArrayAdapter<String> {
 		TextView textDay = (TextView) rowView.findViewById(R.id.day);
 		TextView textTime = (TextView) rowView.findViewById(R.id.time);
 		textTitle.setText(values[position]);
-		textMonth.setText("Mon");
-		textDay.setText("00");
+		textTitle.setTypeface(null,Typeface.BOLD);
+		textMonth.setText("Jan");
+		textDay.setText("01");
 		textTime.setText("9:00-12:00");
 		return rowView;
 	}

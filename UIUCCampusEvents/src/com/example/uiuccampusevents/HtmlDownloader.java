@@ -35,7 +35,7 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[]>{
 	    try {
 	        response = httpclient.execute(httpget);
 	        // Examine the response status
-	        Log.i("Praeda",response.getStatusLine().toString());
+	        Log.i("HTTP",response.getStatusLine().toString());
 
 	        // Get hold of the response entity
 	        HttpEntity entity = response.getEntity();
@@ -68,7 +68,8 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[]>{
 	     * and returned as String.
 	     */
     	//Array of 200 events at max
-    	String[] events = new String[100];
+	    int length = 50;
+    	String[] events = new String[length];
     	String[] temp = new String[2];
     	boolean start = false;
     	int i = 0;	
@@ -83,7 +84,7 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[]>{
 	    			line.trim();
 	    			if (line.contains(init)) start = true;
 	    		}
-	        	while (start && i < 100 && line != null){
+	        	while (start && i < length && line != null){
 	    			line.trim();
 	    			if (line.contains(eventIdentifierA) || line.contains(eventIdentifierB)){
 	    				line = reader.readLine();

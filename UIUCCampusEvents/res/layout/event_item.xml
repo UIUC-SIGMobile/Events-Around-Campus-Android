@@ -8,9 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@+id/label"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/month"
-        android:textSize="20sp" >
+        android:layout_below="@+id/time"
+        android:layout_toRightOf="@+id/day"
+        android:layout_marginBottom="10dp"
+        android:textSize="17sp" >
     </TextView>
 
     <TextView
@@ -18,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-
-        android:layout_marginRight="15dp"
+        android:layout_alignBottom="@+id/time"
+        android:layout_marginRight="20dp"
         android:text="@+id/month"
         android:textSize="15sp" >
     </TextView>
@@ -29,9 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
         android:layout_below="@id/month"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="20dp"
         android:text="@+id/day"
         android:textSize="30sp" >
     </TextView>
@@ -40,9 +40,10 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/day"
-        android:layout_below="@id/title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="4dp"
         android:text="@+id/time"
         android:textSize="15sp" />
 
