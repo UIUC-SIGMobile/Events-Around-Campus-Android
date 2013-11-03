@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class EventArrayAdapter extends ArrayAdapter<String> {
+public class EventArrayAdapter extends ArrayAdapter<String[]> {
 	private final Context context;
-	private final String[] values;
+	private final String[][] values;
 
-	public EventArrayAdapter(Context context, String[] values) {
+	public EventArrayAdapter(Context context, String[][] values) {
 		super(context, R.layout.event_item, values);
 		this.context = context;
 		this.values = values;
@@ -23,15 +23,20 @@ public class EventArrayAdapter extends ArrayAdapter<String> {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.event_item, parent, false);
+		
+		//Set text views for each item in the list
 		TextView textTitle = (TextView) rowView.findViewById(R.id.title);
 		TextView textMonth = (TextView) rowView.findViewById(R.id.month);
 		TextView textDay = (TextView) rowView.findViewById(R.id.day);
 		TextView textTime = (TextView) rowView.findViewById(R.id.time);
-		textTitle.setText(values[position]);
+		
+		//Sets the text to be inserted in each text view
+		textTitle.setText(values[position][0]);
 		textTitle.setTypeface(null,Typeface.BOLD);
 		textMonth.setText("Jan");
 		textDay.setText("01");
-		textTime.setText("9:00-12:00");
+		textTime.setText(values[position][1]);
+		
 		return rowView;
 	}
 }
