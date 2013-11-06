@@ -16,9 +16,7 @@ import android.util.Log;
 
 public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 
-	// Skips all HTML up to this tag
 	private static String init = "<div class=\"place-on-screen\"";
-	// One possible tag identifier for event
 	private static String eventIdentifierA = "<li class=\"odd-item\">";
 	private static String eventIdentifierB = "<li class=\"even-item\">";
 	private static String titleTag = "<span class=\"event-name\"><a href=\".+skinId=1\">";
@@ -27,9 +25,13 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 	private static String endTime = "</span>";
 	private static String urlTag = "<a href=\"http://illinois.edu";
 	private static String endUrl = "\">";
+	private static String dateTag = "<h3 class=\"dayHeader corners-top h-label\">";
+	
+	private static String[] months = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
+	private static String[] monthAbbr = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 	protected String[][] doInBackground(String... url) {
-		String[][] result = new String[1][4];
+		String[][] result = new String[1][5];
 		HttpClient httpclient = new DefaultHttpClient();
 
 		// Prepare a request object
@@ -73,9 +75,8 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 		 * appended to a StringBuilder and returned as String.
 		 */
 		// Array of (length) events to be loaded from HTML
-		int length = 50;
-		String[][] events = new String[length][4];
-		String[] temp = new String[2];
+		int length = 200;
+		String[][] events = new String[length][5];
 		boolean start = false;
 		int i = 0;
 
@@ -84,12 +85,16 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
+				String day = "01";
+				String month = "Jan";
+				
 				while (!start) {
 					line = reader.readLine();
 					line.trim();
 					if (line.contains(init))
 						start = true;
 				}
+				
 				while (start && i < length && line != null) {
 					line.trim();
 					if (line.contains(eventIdentifierA) || line.contains(eventIdentifierB)) {
@@ -104,11 +109,26 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 						String url = extract(event, urlTag, endUrl);
 						url = "http://illinois.edu" + url;
 						String title = extract(event, titleTag, endTitle);
+						
 						events[i][0] = title;
 						events[i][1] = time;
-						events[i][3] = url;
+						events[i][2] = month;
+						events[i][3] = day;
+						events[i][4] = url;
 						i ++;	
 					} 
+					
+					else if (line.contains(dateTag)){
+						String temp = extract(line, ", ", ",");
+						String[] tempArr = temp.split("&nbsp;");
+						month = tempArr[0].toLowerCase();
+						for (int j=0; j<months.length; j++){
+							if (month.equals(months[j])) month = monthAbbr[j];
+						}
+						day = tempArr[1];
+						if (day.length() < 2) day = "0" + day;
+						line = reader.readLine();
+					}
 					else {
 						line = reader.readLine();
 					}
@@ -120,16 +140,18 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 						events[x] = oldEvents[x];
 					}
 				}
-				/*
-				 * for (int j=0; j < 20; j ++){ events[j] = line; }
-				 */
 			}
-		} catch (IOException e) {
+		} 
+		
+		catch (IOException e) {
 			e.printStackTrace();
-		} finally {
+		} 
+		
+		finally {
 			try {
 				is.close();
-			} catch (IOException e) {
+			} 
+			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

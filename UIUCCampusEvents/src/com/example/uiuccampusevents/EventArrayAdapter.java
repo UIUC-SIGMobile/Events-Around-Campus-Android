@@ -33,9 +33,12 @@ public class EventArrayAdapter extends ArrayAdapter<String[]> {
 		//Sets the text to be inserted in each text view
 		textTitle.setText(values[position][0]);
 		textTitle.setTypeface(null,Typeface.BOLD);
-		textMonth.setText("Jan");
-		textDay.setText("01");
+		textMonth.setText(values[position][2]);
+		textDay.setText(values[position][3]);
 		textTime.setText(values[position][1]);
+		
+		if (position % 2 == 0) rowView.setBackgroundColor(0x30e0ecf8);
+		else rowView.setBackgroundColor(0x30ffffff);
 		
 		return rowView;
 	}
