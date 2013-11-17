@@ -11,11 +11,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
-
+	
+	//Identifiers for mainScraper
 	private static String init = "<div class=\"place-on-screen\"";
 	private static String eventIdentifierA = "<li class=\"odd-item\">";
 	private static String eventIdentifierB = "<li class=\"even-item\">";
@@ -27,9 +29,15 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 	private static String endUrl = "\">";
 	private static String dateTag = "<h3 class=\"dayHeader corners-top h-label\">";
 	
+	//Identifiers for detailScraper
+	private static String detailInit = "<div id=\"event-wrapper\">";
+	private static String detailTitleTag = "<h2 class=\"detail-title\">";
+	private static String detailEndTitle = "</h2>";
+	
 	private static String[] months = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 	private static String[] monthAbbr = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
+	
 	protected String[][] doInBackground(String... url) {
 		String[][] result = new String[1][5];
 		HttpClient httpclient = new DefaultHttpClient();
@@ -53,7 +61,13 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 
 				// A Simple JSON Response Read
 				InputStream instream = entity.getContent();
-				result = mainScraper(instream);
+				if (url[0].contains("/calendar/list/")){
+					result = mainScraper(instream);
+				}
+				else if (url[0].contains("/calendar/detail/")){
+					result = detailScraper(instream);
+				}
+				Log.i("URL", url[0]);
 				// now you have the string representation of the HTML request
 				instream.close();
 			}
@@ -66,13 +80,14 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 		return result;
 	}
 
+
 	
-	private static String[][]  mainScraper(InputStream is) {
+	private static String[][] mainScraper(InputStream is) {
 		/*
 		 * To convert the InputStream to String we use the
 		 * BufferedReader.readLine() method. We iterate until the BufferedReader
 		 * return null which means there's no more data to read. Each line will
-		 * appended to a StringBuilder and returned as String.
+		 * be returned as String[][].
 		 */
 		// Array of (length) events to be loaded from HTML
 		int length = 200;
@@ -106,9 +121,12 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 						}
 
 						String time = extract(event, timeTag, endTime);
+						time = time.replaceAll("&nbsp;", " ");
+						if (time.length() >= 20) time = time.substring(0,20).trim();
 						String url = extract(event, urlTag, endUrl);
 						url = "http://illinois.edu" + url;
 						String title = extract(event, titleTag, endTitle);
+						title = title.replaceAll("&amp;", "&");
 						
 						events[i][0] = title;
 						events[i][1] = time;
@@ -158,12 +176,57 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 		return events;
 	}
 	
+
 	
-	private static String[][]  detailScraper(InputStream is) {
+	private static String[][] detailScraper(InputStream is) {
 		/*
 		 * TODO: scrape details from page in HTML
+		 * Array details = [title, date, time, location...]
 		 */
-		return new String[0][0];
+		String[][] details = new String[1][1];
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		
+		boolean start = false;
+		int i = 0;
+		
+		String line = null;
+		String event = "";
+		
+		try {
+			while ((line = reader.readLine()) != null) {	
+				while (!start) {
+					line = reader.readLine();
+					line.trim();
+					if (line.contains(detailInit))
+						start = true;
+				}
+				while (start && i < 1 && line != null) {
+					line = reader.readLine();
+	
+					while (!line.contains("<script type")){
+						event += line;
+						line = reader.readLine();
+						line.trim();
+					}
+					
+					i ++;
+				}
+			}
+			String title = extract(event, detailTitleTag, detailEndTitle);
+			details[0][0] = title;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				is.close();
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return details;
 	}
 
 	private static String extract(String line, String start, String end){

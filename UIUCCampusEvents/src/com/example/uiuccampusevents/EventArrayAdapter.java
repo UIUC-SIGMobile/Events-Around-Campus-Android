@@ -29,13 +29,16 @@ public class EventArrayAdapter extends ArrayAdapter<String[]> {
 		TextView textMonth = (TextView) rowView.findViewById(R.id.month);
 		TextView textDay = (TextView) rowView.findViewById(R.id.day);
 		TextView textTime = (TextView) rowView.findViewById(R.id.time);
+		TextView textUrl = (TextView) rowView.findViewById(R.id.url);
 		
 		//Sets the text to be inserted in each text view
 		textTitle.setText(values[position][0]);
 		textTitle.setTypeface(null,Typeface.BOLD);
+		textTime.setText(values[position][1]);
 		textMonth.setText(values[position][2]);
 		textDay.setText(values[position][3]);
-		textTime.setText(values[position][1]);
+		textUrl.setText(values[position][4]);
+		
 		
 		if (position % 2 == 0) rowView.setBackgroundColor(0x30e0ecf8);
 		else rowView.setBackgroundColor(0x30ffffff);

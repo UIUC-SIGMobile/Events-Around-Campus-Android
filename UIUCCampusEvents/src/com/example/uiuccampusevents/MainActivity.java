@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
 public class MainActivity extends FragmentActivity {
-
+	public final static String URL_MESSAGE = "com.example.uiuccampusevents.URL_MESSAGE";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
