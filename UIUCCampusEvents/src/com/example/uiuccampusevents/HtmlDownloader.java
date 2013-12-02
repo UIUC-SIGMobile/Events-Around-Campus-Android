@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,7 +12,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -30,9 +30,18 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 	private static String dateTag = "<h3 class=\"dayHeader corners-top h-label\">";
 	
 	//Identifiers for detailScraper
-	private static String detailInit = "<div id=\"event-wrapper\">";
+	private static String detailInit = "<div id=\"event-wrapper\">";  //""<h1 class=\"search-cal-name mobile-hide\" id=\"main_content\">";
 	private static String detailTitleTag = "<h2 class=\"detail-title\">";
 	private static String detailEndTitle = "</h2>";
+	private static String detailDateTag = "<span class=\"column-label\">Date </span><span class=\"column-info\">";
+	private static String detailTimeTag = "<span class=\"column-label\">Time </span><span class=\"column-info\">";
+	private static String detailEndTime = " &nbsp; </span>";
+	private static String detailSponsorTag = "<span class=\"column-label\">Sponsor </span><span class=\"column-info\">";
+	private static String detailEndDetails = "</span>";
+	private static String detailDescriptionTag = "<div class=\"description-row\">";
+	private static String detailEndDescription = "</div>";
+	private static String detailLocationTag = "<span class=\"column-label\">Location </span><span class=\"column-info\">";
+	private static String detailCostTag = "<span class=\"column-label\">Cost </span><span class=\"column-info\">";
 	
 	private static String[] months = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 	private static String[] monthAbbr = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -180,10 +189,9 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 	
 	private static String[][] detailScraper(InputStream is) {
 		/*
-		 * TODO: scrape details from page in HTML
-		 * Array details = [title, date, time, location...]
+		 * Array details = [title, date, time, location, sponsor, contact, email, phone, cost, description]
 		 */
-		String[][] details = new String[1][1];
+		String[][] details = new String[1][10];
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		
 		boolean start = false;
@@ -213,7 +221,35 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 				}
 			}
 			String title = extract(event, detailTitleTag, detailEndTitle);
+			if (title.contains("<a href=")){
+				title = extractFromUrl(title);
+			}
+			String date = extract(event, detailDateTag, detailEndDetails);
+			String time = extract(event, detailTimeTag, detailEndTime);
+			String sponsor = extract(event, detailSponsorTag, detailEndDetails);
+			if (sponsor.contains("<a href=")){
+				sponsor = extractFromUrl(sponsor);
+			}
+			String description = "";
+			if (event.contains(detailDescriptionTag)){
+				description = extract(event, detailDescriptionTag, detailEndDescription);
+			}
+			String location = "";
+			if (event.contains(detailLocationTag)){
+				location = extract(event, detailLocationTag, detailEndDetails);
+			}
+			String cost = "";
+			if (event.contains(detailCostTag)){
+				cost = extract(event, detailCostTag, detailEndDetails);
+			}
+			
 			details[0][0] = title;
+			details[0][1] = date;
+			details[0][2] = time;
+			details[0][3] = sponsor;
+			details[0][4] = location;
+			details[0][8] = cost;
+			details[0][9] = description;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -235,7 +271,9 @@ public class HtmlDownloader extends AsyncTask<String, Void, String[][]> {
 		return temp[0];	
 	}
 	
-	
+	private static String extractFromUrl(String line){
+		return extract(line, "<a href=.+\">", "</a>");
+	}
 	
 	protected void onPostExecute(String[][] s) {
 		super.onPostExecute(s);

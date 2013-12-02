@@ -28,6 +28,10 @@
             android:name="com.example.uiuccampusevents.DetailActivity"
             android:label="@string/title_activity_detail" >
         </activity>
+        <activity
+            android:name="com.example.uiuccampusevents.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
     </application>
 
 </manifest>

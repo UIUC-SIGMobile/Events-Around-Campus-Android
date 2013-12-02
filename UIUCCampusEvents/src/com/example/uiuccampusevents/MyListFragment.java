@@ -36,7 +36,7 @@ public class MyListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Intent in = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
-		String url = ((TextView) getListView().findViewById(R.id.url)).getText().toString();
+		String url = ((TextView) v.findViewById(R.id.url)).getText().toString();
 		in.putExtra(MainActivity.URL_MESSAGE, url);
 		startActivity(in);
 	}

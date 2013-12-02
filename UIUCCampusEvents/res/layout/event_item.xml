@@ -50,8 +50,7 @@
     <TextView 
         android:id="@+id/url"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hidden"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" 
+        android:visibility="gone"/>
 
 </RelativeLayout> 
